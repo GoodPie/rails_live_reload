@@ -14,12 +14,13 @@ Works with:
 
 - views (EBR/HAML/SLIM) (the page is reloaded only when changed views which were rendered on the page)
 - partials
-- CSS/JS
+- CSS (hot-reloaded without full page refresh when only CSS files change)
+- JS (triggers full page reload)
 - helpers (if configured)
 - YAML locales (if configured)
 - on the "crash" page, so it will be reloaded as soon as you make a fix
 
-The page is reloaded fully with `window.location.reload()` to make sure that every chage will be displayed.
+When only CSS files are changed, the stylesheets are refreshed without a full page reload for a smoother development experience. For all other changes, the page is reloaded fully with `window.location.reload()` to make sure that every change will be displayed.
 
 ## Usage
 
@@ -69,7 +70,6 @@ You are welcome to contribute. See list of `TODO's` below.
 
 ## TODO
 
-- reload CSS without reloading the whole page?
 - smarter reload if there is a change in helper (check methods from rendered views?)
 - generator for initializer
 - more complex rules? e.g. if "user.rb" file is changed - reload all pages with rendered "users" views

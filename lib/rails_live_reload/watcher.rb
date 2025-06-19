@@ -35,7 +35,15 @@ module RailsLiveReload
           all.each do |file|
             files[file] = File.mtime(file).to_i rescue nil
           end
-          reload_all
+
+          # Check if only CSS files were changed
+          css_only = all.all? { |file| css_file?(file) }
+
+          if css_only && all.any?
+            reload_css
+          else
+            reload_all
+          end
         end
         listener.start
       end
@@ -56,6 +64,21 @@ module RailsLiveReload
       @sockets.each do |socket, _|
         socket.puts data
       end
+    end
+
+    def reload_css
+      data = {
+        event: RailsLiveReload::INTERNAL[:socket_events][:css_reload],
+        files: files
+      }.to_json
+
+      @sockets.each do |socket, _|
+        socket.puts data
+      end
+    end
+
+    def css_file?(file)
+      file.match?(/\.css(\.|$)/)
     end
 
     def create_socket_directory

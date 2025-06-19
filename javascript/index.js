@@ -1,5 +1,6 @@
 const COMMANDS = {
   RELOAD: "RELOAD",
+  CSS_RELOAD: "CSS_RELOAD",
 };
 
 const PROTOCOLS = ['rails-live-reload-v1-json'];
@@ -65,6 +66,29 @@ export default class RailsLiveReload {
     window.location.reload();
   }
 
+  reloadCSS() {
+    const links = document.querySelectorAll('link[rel="stylesheet"]');
+    links.forEach(link => {
+      const href = link.href;
+      const url = new URL(href);
+
+      // Add or update timestamp parameter to force reload
+      url.searchParams.set('_t', Date.now().toString());
+
+      // Create new link element
+      const newLink = link.cloneNode();
+      newLink.href = url.toString();
+
+      // Replace old link with new one
+      newLink.onload = () => {
+        link.remove();
+      };
+
+      // Insert new link after the old one
+      link.parentNode.insertBefore(newLink, link.nextSibling);
+    });
+  }
+
   get optionsNode() {
     const node = document.getElementById("rails-live-reload-options");
     if (!node) throw "Unable to find RailsLiveReload options";
@@ -112,6 +136,8 @@ export default class RailsLiveReload {
 
     if (data.command === COMMANDS.RELOAD) {
       this.fullReload();
+    } else if (data.command === COMMANDS.CSS_RELOAD) {
+      this.reloadCSS();
     }
   }
 

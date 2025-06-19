@@ -26,7 +26,8 @@ module RailsLiveReload
       remote: "remote"
     },
     socket_events: {
-      reload: 'reload'
+      reload: 'reload',
+      css_reload: 'css_reload'
     },
     protocols: ["rails-live-reload-v1-json"].freeze
   }

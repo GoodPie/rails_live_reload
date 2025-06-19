@@ -15,9 +15,22 @@ module RailsLiveReload
       !changes.size.zero?
     end
 
+    def css_only_changes?
+      return false unless reload?
+      changes.all? { |file| css_file?(file) }
+    end
+
+    def css_file?(file)
+      file.match?(/\.css(\.|$)/)
+    end
+
     def payload
       if reload?
-        { command: "RELOAD" }
+        if css_only_changes?
+          { command: "CSS_RELOAD" }
+        else
+          { command: "RELOAD" }
+        end
       else
         { command: "NO_CHANGES" }
       end
