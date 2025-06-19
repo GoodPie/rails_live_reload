@@ -60,6 +60,10 @@ module RailsLiveReload
                 RailsLiveReload::Checker.files = data['files']
 
                 reload_all
+              when RailsLiveReload::INTERNAL[:socket_events][:css_reload]
+                RailsLiveReload::Checker.files = data['files']
+
+                reload_all
               else
                 raise NotImplementedError
               end
