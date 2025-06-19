@@ -34,7 +34,15 @@ module RailsLiveReload
         when 'setup'
           setup payload['options']
         else
-          raise NotImplementedError
+          # Try to handle custom message types through hooks system
+          if server.hooks&.handle_custom_message(payload['event'], payload, self)
+            # Message was handled by a custom handler
+            Logger.log_server_event("custom_message_processed", event: payload['event'])
+          else
+            # No handler found for this message type
+            Logger.log_server_event("unknown_message_type", event: payload['event'])
+            raise NotImplementedError, "Unknown message type: #{payload['event']}"
+          end
         end
       end
 
