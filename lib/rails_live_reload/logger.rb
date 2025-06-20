@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'logger'
+require 'stringio'
+
 module RailsLiveReload
   # Structured logger for Rails Live Reload
   class Logger
@@ -102,10 +105,13 @@ module RailsLiveReload
         @output.send(level, formatted_message)
       when StringIO
         @output.puts("[#{level.upcase}] #{formatted_message}")
-      when defined?(Rails) && Rails.logger
-        Rails.logger.send(level, formatted_message)
       else
-        puts "[#{level.upcase}] #{formatted_message}"
+        # Try to use Rails.logger if available and not nil
+        if defined?(Rails) && Rails.logger && Rails.logger.respond_to?(level)
+          Rails.logger.send(level, formatted_message)
+        else
+          puts "[#{level.upcase}] #{formatted_message}"
+        end
       end
     end
 
