@@ -20,7 +20,7 @@ module RailsLiveReload
 
     initializer "rails_live_reload.watcher" do
       if enabled?
-        RailsLiveReload::Watcher.init
+        RailsLiveReload.start!
       end
     end
 

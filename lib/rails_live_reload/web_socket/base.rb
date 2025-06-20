@@ -6,7 +6,9 @@ module RailsLiveReload
       attr_reader :server, :env, :protocol, :request
       attr_reader :dt, :files
 
-      delegate :event_loop, to: :server
+      def event_loop
+        server&.event_loop
+      end
 
       def initialize(server, request)
         @server, @request = server, request
